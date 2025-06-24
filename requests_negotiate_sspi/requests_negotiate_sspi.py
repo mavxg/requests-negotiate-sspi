@@ -183,7 +183,7 @@ class HttpNegotiateAuth(AuthBase):
             request.headers['Authorization'] = '{} {}'.format(scheme, base64.b64encode(auth[0].Buffer).decode('ASCII'))
             _logger.debug('Sending Response - error={} authenticated={}'.format(error, clientauth.authenticated))
         except pywintypes.error as e:
-            _logger.debug('Error calling {}: {}'.format(e[1], e[2]), exc_info=e)
+            _logger.debug('Error calling {}: {}'.format(e.funcname, e.strerror), exc_info=e)
             return response
 
         response3 = response2.connection.send(request, **args)
