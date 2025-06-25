@@ -196,9 +196,14 @@ class HttpNegotiateAuth(AuthBase):
 
     def _response_hook(self, r, **kwargs):
         if r.status_code == 401:
-            for scheme in ('Negotiate', 'NTLM'):
-                if scheme.lower() in r.headers.get('WWW-Authenticate', '').lower():
-                    return self._retry_using_http_Negotiate_auth(r, scheme, kwargs)
+            scheme = 'Negotiate'
+            if scheme.lower() in r.headers.get('WWW-Authenticate', '').lower():
+                response = self._retry_using_http_Negotiate_auth(r, scheme, kwargs)
+                if response.status_code != 401:
+                    return response
+            scheme = 'NTLM'
+            if scheme.lower() in r.headers.get('WWW-Authenticate', '').lower():
+                return self._retry_using_http_Negotiate_auth(r, scheme, kwargs)
 
     def __call__(self, r):
         r.headers['Connection'] = 'Keep-Alive'
