@@ -11,7 +11,7 @@ orig_HTTPAdapter_build_response = HTTPAdapter.build_response
 def new_HTTPAdapter_build_response(self, request, resp):
     response = orig_HTTPAdapter_build_response(self, request, resp)
     try:
-        response.peercert = resp.connection.sock.getpeercert(binary_form=True)
+        response.peercert = resp._connection.sock.getpeercert(binary_form=True)
     except AttributeError:
         response.peercert = None
     return response
